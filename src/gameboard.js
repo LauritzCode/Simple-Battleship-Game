@@ -33,6 +33,7 @@ class GameBoard {
     if (!hit) {
       this.missedAttacks.push(coordinate);
     }
+    return hit;
   }
 
   // Check if all ships on the board have been sunk
@@ -54,5 +55,4 @@ class GameBoard {
     return coords;
   }
 }
-
 module.exports = GameBoard;
