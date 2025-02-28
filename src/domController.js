@@ -1,19 +1,26 @@
-export const renderGameBoard = (clickHandler) => {
-  const container = document.querySelector("#app");
+export const renderGameBoard = (
+  containerSelector,
+  boardId,
+  clickHandler = null
+) => {
+  const container = document.querySelector(containerSelector);
   const board = document.createElement("div");
-  board.id = "gameboard";
+  board.id = boardId;
+  board.classList.add("gameboard");
 
   for (let row = 0; row < 10; row++) {
     for (let col = 0; col < 10; col++) {
       const cell = document.createElement("div");
       cell.classList.add("cell");
-      cell.id = `cell-${row}-${col}`;
+      cell.id = `cell-${boardId}-${row}-${col}`;
       cell.dataset.row = row;
       cell.dataset.col = col;
 
-      cell.addEventListener("click", () => {
-        clickHandler([row, col]);
-      });
+      if (clickHandler) {
+        cell.addEventListener("click", () => {
+          clickHandler([row, col]);
+        });
+      }
 
       board.appendChild(cell);
     }
