@@ -54,5 +54,10 @@ class GameBoard {
     }
     return coords;
   }
+  reset() {
+    this.ships = [];
+    this.missedAttacks = [];
+  }
 }
+
 module.exports = GameBoard;
