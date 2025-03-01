@@ -4,9 +4,6 @@ class GameBoard {
     this.missedAttacks = [];
   }
 
-  // Place a ship on the board
-  // startCoordinate: [x, y]
-  // orientation: 'horizontal' or 'vertical'
   placeShip(ship, startCoordinate, orientation = "horizontal") {
     const newCoordinates = this.getCoordinatesForShip(
       startCoordinate,

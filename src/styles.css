@@ -4,57 +4,141 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-family: "Bangers", system-ui;
 }
 
 body {
     height: 100vh;
     width: 100vw;
+    background: linear-gradient(7deg, rgba(2,2,31,1) 0%, rgba(25,78,161,1) 100%);
+    font-family: "Bangers", system-ui;
 }
 
+button {
+    padding: 10px 20px;
+    border: 2px solid white;
+    color: white;
+    background: rgb(92, 163, 214);
+    cursor: pointer;
+    transition: 500ms;
+    font-size: 1.5rem;
+}
+
+#buttons-container {
+    gap: 10px;
+}
+
+button:hover {
+    transform: scale(1.075);
+    background: rgb(45, 57, 107);
+}
+
+h1 {
+    color: white;
+    font-size: 3rem;
+    font-weight: 500;
+}
+
+#player-container {
+    position: relative; 
+    border: 4px solid white
+  }
+
+#enemy-container {
+    border: 4px solid white
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; 
+    height: 100%;
+    width: 100%;
+    padding: 20px; 
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0; 
+}
+
+#gameboards-container {
+    display: flex;
+    gap: 20px; 
+    flex-grow: 1; 
+    align-items: center;
+    justify-content: center; 
+}
 
 .gameboard {
     display: grid;
     grid-template-columns: repeat(10, 40px);
     grid-template-rows: repeat(10, 40px);
-    gap: 2px;
-    max-width: fit-content;
-    margin: auto;
 }
 
 .cell {
-    border: 1px solid #333;
+    border: 1px solid #0000007f;
     width: 40px;
     height: 40px;
     display: flex;
     align-items: center;
+    background: rgb(88, 160, 255);
+    font-size: 2.5rem;
     justify-content: center;
-    cursor: pointer;
+    
 }
 
-h1 {
-    text-align: center;
-    margin: 50px
+#player-board .cell.notPlaying {
+    cursor: pointer !important;
+  }
+
+#player-board .cell.notPlaying:hover {
+    border: 4px solid rgb(38, 223, 38)
+}
+
+#enemy-board .cell.playing:hover {
+    border: 4px solid rgb(223, 38, 38)
+}
+
+#buttons-container {
+    display: flex;
+    gap: 10px; 
+    margin: 20px 0; 
 }
 
 .hidden {
     display: none;
 }
 
-#app {
-    display: flex;
-    gap: 20px;
-    height: 100%;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-
+.ship-present {
+    background-color: rgb(22, 24, 36);
 }
 
-.ship-present {
-    background-color: gray;
-  }
-
 .selected {
-    border: 2px solid yellow;
+    border: 3px solid rgb(221, 55, 55);
+}
+
+
+#ship-preview {
+    position: absolute;
+    pointer-events: none; 
+    opacity: 0.5;
+    z-index: 5;
   }
   
+  #ship-preview.valid {
+    background-color: green;
+  }
+  
+  #ship-preview.invalid {
+    background-color: red;
+  }
+
+  .ship {
+    position: absolute;
+    background-color: gray;
+    opacity: 0.8;
+    cursor: move;
+    z-index: 10; 
+  }
