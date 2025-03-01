@@ -50,7 +50,7 @@ You can play this game by cloning the repository and running it locally. Check o
 
 1. **Clone this repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/LauritzCode/Simple-Battleship-Game
    ```
 2. **Navigate to the project folder:**
    ```bash
