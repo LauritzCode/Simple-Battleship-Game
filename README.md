@@ -66,8 +66,6 @@ You can play this game by cloning the repository and running it locally. Check o
    ```
    Or simply open `index.html` in a browser if no build step is required.
 
-I’m still learning, so I’d love feedback or suggestions! If you want to contribute or help improve the project, feel free to open an issue or submit a pull request on GitHub. I'm excited to learn from others and grow as a coder.
+I’m still learning, so I’d love feedback or suggestions! If you want to contribute or help improve the project, feel free to open an issue or submit a pull request!
 
 ---
-
-Feel free to adjust any sections or details to better match your project.
