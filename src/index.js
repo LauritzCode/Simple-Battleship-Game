@@ -113,13 +113,40 @@ flipButton.textContent = "Flip";
 flipButton.classList.add("hidden");
 app.appendChild(flipButton);
 
+const isFlipValid = (selectedIndex, newOrientation) => {
+  const tempBoard = new GameBoard();
+
+  playerShipsConfig.forEach((config, index) => {
+    if (index === selectedIndex) return;
+    const ship = new Ship(config.size);
+
+    tempBoard.placeShip(ship, config.start, config.orientation);
+  });
+
+  const selectedConfig = playerShipsConfig[selectedIndex];
+  const testShip = new Ship(selectedConfig.size);
+  return tempBoard.isPlacementValid(
+    testShip,
+    selectedConfig.start,
+    newOrientation
+  );
+};
+
 flipButton.addEventListener("click", () => {
   if (selectedShipIndex === null) return;
 
   const currentOrientation = playerShipsConfig[selectedShipIndex].orientation;
-  playerShipsConfig[selectedShipIndex].orientation =
+  const newOrientation =
     currentOrientation === "horizontal" ? "vertical" : "horizontal";
 
+  if (!isFlipValid(selectedShipIndex, newOrientation)) {
+    alert(
+      "Cannot flip ship: placement would cause collision or go out of bounds."
+    );
+    return;
+  }
+
+  playerShipsConfig[selectedShipIndex].orientation = newOrientation;
   spawnPlayerShips();
 
   selectedShipIndex = null;
@@ -190,13 +217,16 @@ const handlePlayerCellClick = (coordinates) => {
   );
 
   if (selectedShipIndex === null) {
-    selectedShipIndex = humanGameBoard.ships.findIndex((placed) =>
+    // Attempt to select a ship
+    const index = humanGameBoard.ships.findIndex((placed) =>
       placed.coordinates.some(
         (coord) => coord[0] === coordinates[0] && coord[1] === coordinates[1]
       )
     );
 
-    if (selectedShipIndex !== -1) {
+    if (index !== -1) {
+      // Ship found, select it
+      selectedShipIndex = index;
       const selectedShip = humanGameBoard.ships[selectedShipIndex];
       selectedShip.coordinates.forEach((coord) => {
         const shipCell = document.getElementById(
@@ -206,12 +236,44 @@ const handlePlayerCellClick = (coordinates) => {
           shipCell.classList.add("selected");
         }
       });
-      flipButton.classList.remove("hidden");
+      flipButton.classList.remove("hidden"); // Show flip button if applicable
     }
+    // If no ship is found (index === -1), selectedShipIndex remains null
   } else {
-    playerShipsConfig[selectedShipIndex].start = coordinates;
-    spawnPlayerShips();
+    // Move the selected ship
+    // Create a temporary board to test the new placement
+    const tempBoard = new GameBoard();
+    const tempConfig = playerShipsConfig.map((config) => ({
+      ...config,
+      start: [...config.start],
+    }));
+    tempConfig[selectedShipIndex].start = coordinates;
 
+    // Validate the new placement
+    let allPlaced = true;
+    tempConfig.forEach((shipConfig) => {
+      const ship = new Ship(shipConfig.size);
+      const placed = tempBoard.placeShip(
+        ship,
+        shipConfig.start,
+        shipConfig.orientation
+      );
+      if (!placed) {
+        allPlaced = false;
+      }
+    });
+
+    if (allPlaced) {
+      // Update the actual configuration and board
+      playerShipsConfig[selectedShipIndex].start = coordinates;
+      spawnPlayerShips(); // Function to re-render the board
+    } else {
+      alert(
+        "Cannot move ship: placement would cause collision or go out of bounds."
+      );
+    }
+
+    // Deselect the ship
     selectedShipIndex = null;
     flipButton.classList.add("hidden");
   }
@@ -224,7 +286,7 @@ export const getRandomInt = (min, max) => {
 };
 
 export const getRandomOrientation = () => {
-  return Math.floor() < 0.5 ? "horizontal" : "vertical";
+  return Math.random() < 0.6 ? "horizontal" : "vertical";
 };
 
 export const getRandomStart = (size, orientation) => {
@@ -239,10 +301,12 @@ export const spawnComputerShips = () => {
   enemyGameBoard.reset();
   computerShipsConfig.forEach((shipConfig) => {
     const ship = new Ship(shipConfig.size);
-    let orientation = getRandomOrientation();
-    let start = getRandomStart(shipConfig.size, orientation);
-
-    enemyGameBoard.placeShip(ship, start, orientation);
+    let placed = false;
+    while (!placed) {
+      let orientation = getRandomOrientation();
+      let start = getRandomStart(shipConfig.size, orientation);
+      placed = enemyGameBoard.placeShip(ship, start, orientation);
+    }
   });
 
   console.log("Computer is ready!");

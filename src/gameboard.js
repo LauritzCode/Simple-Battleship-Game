@@ -8,13 +8,20 @@ class GameBoard {
   // startCoordinate: [x, y]
   // orientation: 'horizontal' or 'vertical'
   placeShip(ship, startCoordinate, orientation = "horizontal") {
-    const [x, y] = startCoordinate;
-    let coordinates = [];
-    for (let i = 0; i < ship.length; i++) {
-      if (orientation === "horizontal") coordinates.push([x, y + i]);
-      else coordinates.push([x + i, y]);
+    const newCoordinates = this.getCoordinatesForShip(
+      startCoordinate,
+      ship.length,
+      orientation
+    );
+
+    if (
+      !this.areCoordinatesInBounds(newCoordinates) ||
+      this.isCollision(newCoordinates)
+    ) {
+      return false;
     }
-    this.ships.push({ ship, coordinates });
+    this.ships.push({ ship, coordinates: newCoordinates });
+    return true;
   }
 
   // Process an attack at a given coordinate
@@ -54,10 +61,56 @@ class GameBoard {
     }
     return coords;
   }
+
   reset() {
     this.ships = [];
     this.missedAttacks = [];
   }
-}
 
+  getCoordinatesForShip(
+    startCoordinate,
+    shipLength,
+    orientation = "horizontal"
+  ) {
+    const [x, y] = startCoordinate;
+    let coordinates = [];
+    for (let i = 0; i < shipLength; i++) {
+      if (orientation === "horizontal") {
+        coordinates.push([x, y + i]);
+      } else {
+        coordinates.push([x + i, y]);
+      }
+    }
+    return coordinates;
+  }
+
+  areCoordinatesInBounds(coordinates) {
+    return coordinates.every(([x, y]) => x >= 0 && x < 10 && y >= 0 && y < 10);
+  }
+
+  isCollision(newCoordinates) {
+    for (let placed of this.ships) {
+      for (let coord of placed.coordinates) {
+        for (let newCoord of newCoordinates) {
+          if (coord[0] === newCoord[0] && coord[1] === newCoord[1]) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  isPlacementValid(ship, startCoordinate, orientation = "horizontal") {
+    const newCoordinates = this.getCoordinatesForShip(
+      startCoordinate,
+      ship.length,
+      orientation
+    );
+    return (
+      this.areCoordinatesInBounds(newCoordinates) &&
+      !this.isCollision(newCoordinates)
+    );
+  }
+}
 module.exports = GameBoard;
